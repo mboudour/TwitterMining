@@ -3,7 +3,6 @@
 
 # Sample script that collects tweets matching a string.
 
-
 '''Collect tweets matching a text pattern and store them
 continuously in JSON-formatted lines of a local file.'''
 
