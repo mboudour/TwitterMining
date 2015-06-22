@@ -311,7 +311,8 @@ def plot_graph_stack(G,broken_graph,broken_partition,npartition,layer1,layer2,la
     # print G.nodes(data=True)
     # rr=nx.attribute_assortativity_coefficient(G,'asso')
     # print 'Attribute assortativity coefficient wrt layer partition (old)= %f' %orr
-    title_s='%i weakly connected components (%i 3-layered, %i 2-layered, %i 1-layered)\n Sizes of weakly_connected_components:(%i,%i,%i,%i,%i,%i)' %(len(npartition),layers_m[3],layers_m[2],layers_m[1],nodesSizes[0],nodesSizes[1],nodesSizes[2],nodesSizes[3],nodesSizes[4],nodesSizes[5])
+    nodesSizes=sorted(nodesSizes,reverse=True)
+    title_s='%i weakly connected components (%i 3-layered, %i 2-layered, %i 1-layered)\n Sizes of 6 biggest weakly connected components:(%i,%i,%i,%i,%i,%i)' %(len(npartition),layers_m[3],layers_m[2],layers_m[1],nodesSizes[0],nodesSizes[1],nodesSizes[2],nodesSizes[3],nodesSizes[4],nodesSizes[5])
 
     # title_s='%i connected components (%i 3-layered, %i 2-layered, %i 1-layered)' %(len(npartition),layers_m[3],layers_m[2],layers_m[1])  #  %(len(npartition),len(npartition)-singles,singles)
     plt.title(title_s,{'size': '20'})
@@ -460,7 +461,8 @@ def plot_graph_stack_com(G,broken_graph,broken_partition,npartition,layer1,layer
     # print G.nodes(data=True)
     # rr=nx.attribute_assortativity_coefficient(G,'asso')
     # print 'Attribute assortativity coefficient wrt layer partition (old)= %f' %orr
-    title_s='%i Communities (%i 3-layered, %i 2-layered, %i 1-layered)\n Sizes of Communities:(%i,%i,%i,%i,%i,%i)' %(len(npartition),layers_m[3],layers_m[2],layers_m[1],nodesSizes[0],nodesSizes[1],nodesSizes[2],nodesSizes[3],nodesSizes[4],nodesSizes[5])
+    nodesSizes=sorted(nodesSizes,reverse=True)
+    title_s='%i Communities (%i 3-layered, %i 2-layered, %i 1-layered)\n Sizes of 6 biggest Communities:(%i,%i,%i,%i,%i,%i)' %(len(npartition),layers_m[3],layers_m[2],layers_m[1],nodesSizes[0],nodesSizes[1],nodesSizes[2],nodesSizes[3],nodesSizes[4],nodesSizes[5])
 
     # title_s='%i connected components (%i 3-layered, %i 2-layered, %i 1-layered)' %(len(npartition),layers_m[3],layers_m[2],layers_m[1])  #  %(len(npartition),len(npartition)-singles,singles)
     plt.title(title_s,{'size': '20'})
