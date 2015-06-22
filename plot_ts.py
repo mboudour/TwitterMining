@@ -245,9 +245,10 @@ def dic_operations(dir_search,argsr,ploted=False,bars=False):
                 json_tname='interlevel_hashtags.graphml'
                 outfile=os.path.join('%s' % filedir,json_tname)
                 for user_id in interlevel:
-                    for hasht in interlevel[user_id]:
-                        if interlevel[user_id][hasht]>0:
-                            F.add_edge(user_id,hasht,weight=interlevel[user_id][hasht])
+                    for hastt in interlevel[user_id]:
+                        for hasht in hastt:
+                            if interlevel[user_id][hasht]>0:
+                                F.add_edge(user_id,hasht,weight=interlevel[user_id][hasht])
                 nx.write_graphml(F,outfile)
             if 'terms' in argsr.hasthags_graph :
                 json_tname='interlevel_terms.graphml'
