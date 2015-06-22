@@ -260,6 +260,7 @@ def dic_operations(dir_search,argsr,ploted=False,bars=False):
 
             fg=nx.Graph()
             if 'hasthtag' in argsr.hasthags_graph :
+                ffffff=open('out.tst','w')
                 json_tname='upperlevel_hashtags.graphml'
                 outfile=os.path.join('%s' % filedir,json_tname)
                 for hs in it.combinations(upperlevel,2):
@@ -267,17 +268,25 @@ def dic_operations(dir_search,argsr,ploted=False,bars=False):
                     bb=upperlevel[hs[1]]
                     wei=set(aa).intersection(set(bb))
                     if len(wei)>0:
-                        fg.add_edge(hs[0],hs[1],weight=len(wei))
+                        # fg.add_edge(hs[0],hs[1],weight=len(wei))
+                        try:
+                            ffffff.write(unicode(hs[0])+unicode(hs[1]))
+                            fg.add_edge(unicode(hs[0]),unicode(hs[1]),weight=len(wei))
+                        # print hs[0],hs[1]
+                        except:
+                            continue
+
                 nx.write_graphml(fg,outfile)
             if 'terms' in argsr.hasthags_graph :
                 json_tname='upperlevel_terms.graphml'
+                print json_tname
                 outfile=os.path.join('%s' % filedir,json_tname)
                 for hs in it.combinations(upperlevel_terms,2):
                     aa=upperlevel_terms[hs[0]]
                     bb=upperlevel_terms[hs[1]]
                     wei=set(aa).intersection(set(bb))
                     if len(wei)>0:
-                        fg.add_edge(hs[0],hs[1],weight=len(wei))
+                        fg.add_edge(unicode(hs[0]),unicode(hs[1]),weight=len(wei))
                 nx.write_graphml(fg,outfile)
 
             if argsr.bars:

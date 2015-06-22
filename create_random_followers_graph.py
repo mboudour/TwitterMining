@@ -8,7 +8,7 @@ import networkx as nx
 def create_random_followers_graph(followers_list,fil=None):
     '''Creates a random_followers_graph with nodes the followers_list'''
     if fil==None:
-        fil='random_followers_graph.graphml'
+        fil='friendship_graph.graphml'
     n=len(followers_list)
     G=nx.gnc_graph(n)
     F=G.__class__()
@@ -20,10 +20,21 @@ def create_random_followers_graph(followers_list,fil=None):
     for i in G.nodes():
         att=G.node[i]
         F.add_node(mapping_f[i], attr_dict=att)
-    return F
+    nx.write_graphml(F,fil)
+    # return F
 
+def read_user_list(filename):
+    ll=[]
+    f=open(filename)
+    for lin in f:
+        # print lin.strip()
+        ll.append(lin.strip())
+    return ll
 
 # followers_list=['a','b','c','d','e']
 # F=create_random_followers_graph(followers_list)
 # print F.edges()
 # print F.nodes()
+user_list=read_user_list('user_list.txt')
+# F=
+create_random_followers_graph(user_list)

@@ -190,8 +190,8 @@ def json_cut_in_arg(fil,args):
         u+=1
 
         try:
-            # kk=json.loads(ast.literal_eval(k))
-            kk=json.loads(k)
+            kk=json.loads(ast.literal_eval(k))
+            # kk=json.loads(k)
             # for ke,ve in kk.items():
             #     print ke,ve
             # print 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk'
