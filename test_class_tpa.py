@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import twi_stat_to_panda as tpa  
-import twi_stat_to_panda_p as tpp 
+# import twi_stat_to_panda_p as tpp 
 import pandas as pd
 import glob
 import sys
