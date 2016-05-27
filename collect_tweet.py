@@ -17,6 +17,7 @@ import sys
 import twitter 
 import ast
 import time
+import pickle
 
 
 FROM_DATE=None#'2015-01-15'
@@ -221,7 +222,7 @@ if __name__ == '__main__':
         filename+=l+'_'
 
     json_filename = filename[:-1]+'.json' # Where to store matching tweets
-    lookup_text = argsr.search # Text to search for
+    lookup_text = unicode(argsr.search,'utf-8')# Text to search for
 
     outfile_name = os.path.join('%s' % filedir,json_filename)
    
