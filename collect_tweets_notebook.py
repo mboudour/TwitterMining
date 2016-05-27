@@ -50,13 +50,14 @@ class UserAuth(object):
 
     def load_login_cred(self):#.auth,args.auth_dict):
         '''Loads the credentials for Twitter api from a file if exists or create a new file'''
+
         if len(self.auth_cr)==4:
             # cons_key,cons_sec,oa_tok,oa_tok_sec=self.auth_cr
             self.credentials['CONSUMER_KEY']=self.auth_cr[0]
             self.credentials['CONSUMER_SECRET']=self.auth_cr[1]
             self.credentials['OAUTH_TOKEN']=self.auth_cr[2]
             self.credentials['OAUTH_TOKEN_SECRET']=self.auth_cr[3]
-            f=open(auth_dir,'w')
+            f=open(self.creddir+'auth_cred.txt','w')
             for i in self.credentials:
 
                 f.write(i+' , '+str(self.credentials[i])+'\n')
@@ -81,7 +82,7 @@ class UserAuth(object):
             self.credentials['CONSUMER_SECRET']=raw_input('Give me the Consumer secret: ')
             self.credentials['OAUTH_TOKEN']=raw_input('Give me the Access token: ')
             self.credentials['OAUTH_TOKEN_SECRET']=raw_input('Give me the Access token secret: ')
-            f=open('auth_cred.txt','w')
+            f=open(self.creddir+'auth_cred.txt','w')
             for i in self.credentials:
 
                 f.write(i+' , '+str(self.credentials[i])+'\n')
@@ -100,11 +101,10 @@ class UserAuth(object):
 
 class TwitterSearch(object):
     """docstring for TwitterSearch
-
+        
 
 """
     def __init__(self, arg):
-        super(TwitterSearch, self).__init__()
         self.arg = arg
         
 
