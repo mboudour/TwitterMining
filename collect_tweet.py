@@ -20,7 +20,7 @@ import time
 import pickle
 
 
-FROM_DATE=None#'2015-01-15'
+FROM_DATE=None#'2015-01-15' '2008-02-28'
 MAX_ID=None
 
 def load_login_cred(args):#.auth,args.auth_dict):
@@ -108,30 +108,105 @@ Returns:
 A set() containing all the numeric 'id' attributes of tweets we have
 already seen.
 """
-    if not filename:
-        return set()
-    try:
-        seen = set()
-        filename_o=open(filename)
+    # print filename[:-4]
+    # import glob
+    # json_files = glob.glob('*.json')
+    # print json_files
+    import fnmatch
+    import os
+    # print os.listdir(filename.split('/')[0])
+    json_files=[]
+    for files in os.listdir(filename.split('/')[0]):
+        if fnmatch.fnmatch(files, '*.json'):
+            json_files.append(os.path.join('%s' % filedir,files))
+    print json_files
+    # print aaaa
+    # if len(json_files) == 0:
+    # raise RuntimeError('No json files to convert.')
+    if not os.path.isfile(filename):
+        print '1'
+        # if not os.path.isfile(filename[:-4]):
+        if len(json_files) == 0:
+        
+            print '2'
+            # print aaaaaaaa
+            return set()
+        else:
+            print '3'
+            filename_i=open(filename,'a+')
+            seen = set()
 
-        for k in filename_o:
+            for filenm in json_files:
+                try:
+                    # print filename,'bbb'
+                    filename_o=open(filenm)
+                    # print filename
+                    for k in filename_o:
+                        # print k
+                        try:
+                            # kk=json.loads(ast.literal_eval(k))
+                            kk=json.loads(k)
+                            # print type(kki)
+                            # kk=json.loads(kki)
+                            # print kk.keys()
+                            # print type(kk)
+                            # for key, value in kk.items():
 
-            try:
-                kk=json.loads(ast.literal_eval(k))
-                for key, value in kk.iteritems():
+                            #     if key=='id':
+                            #         # print key
+                            #         iid=value
 
-                    if key=='id':
-                        # print key
-                        iid=value
+                            seen.add(kk['id'])
+                            print >> filename_i, json.dumps(kk['id'])
+                        except Exception, e:
+                            print e,'st'
+                            print 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno)
+                            continue
+                        
+                except Exception, e:
+                    seen = set() # Avoid returning partial results on error
+                    print len(seen),e,'st'
+                    print 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno)
+                filename_o.close()
+        # filename_i=open(filename)
+        # filename_o.close()
+        # return set()
+    # if not filename
+    # print 'hdhhhhh'
+    else:
+        print '4'
+        try:
+            seen = set()
+            # print filename,'bbb'
+            filename_o=open(filename)
+            # print filename
+            for k in filename_o:
+                # print k
+                try:
+                    # kk=json.loads(ast.literal_eval(k))
+                    kk=json.loads(k)
 
-                seen.add(iid)
-            except Exception, e:
-                print e
-                continue
-            
-    except Exception, e:
-        seen = set() # Avoid returning partial results on error
-        print len(seen),e
+                    
+                    # for key, value in kk.items():
+
+                    #     if key=='id':
+                    #         # print key
+                    #         iid=value
+
+                    seen.add(kk)
+                except Exception, e:
+                    print e
+                    print 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno)
+                    continue
+                
+        except Exception, e:
+            seen = set() # Avoid returning partial results on error
+            print len(seen),e
+            print 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno)
+    # print len(seen)
+    # print filename
+    filename_o.close()
+    # print aaa
     return seen
 
 def streamsearch(ofile, text,args, max_pages=2000, results_per_page=200,from_date=FROM_DATE):
@@ -157,13 +232,15 @@ None
     # Load the id of already seen tweets, if there are any.
     global MAX_ID
     ofilename = ofile or 'standard output'
-    seen = ofile and preload_tweets(ofile) or set()
+    seen = ofile+'.ids' and preload_tweets(ofile+'.ids') or set()
 
     # from_date=FROM_DATE
     if seen:
-        print '%d tweets preloaded from %s', len(seen), ofilename
+        print '%d tweets preloaded from %s' %(len(seen), ofile+'.ids')
     try:
         ostream = ofile and file(ofile, 'a+') or sys.stdout
+        fop=open( ofile+'.ids', 'a+')
+
         u=0
         for matches in search(text,args, max_pages=max_pages, sin_id=from_date,
                               results_per_page=results_per_page):#,args.auth,args.auth_dict):
@@ -177,12 +254,13 @@ None
             
                 (tid, tuser, text, cr_at) = (tweet.GetId() ,tweet.GetUser(),
                                       tweet.GetText(), tweet.GetCreatedAt()) #['id'], ['from_user'] ['text']
-                tweet=tweet.AsJsonString()
+                tweet=tweet.AsDict()
                 # print tid,cr_at
                 if not tid in seen:
                     newmatches += 1
                     seen.add(tid)
                     print >> ostream, json.dumps(tweet)
+                    print >> fop, json.dumps(tid)
              
             if newmatches > 0:
                 print '%d new tweets logged at %s' %(newmatches, ofilename)
@@ -190,11 +268,12 @@ None
             MAX_ID=tid
             
         ostream.close()
-            
+        fop.close()    
     except IOError, e:
         if ostream and ostream != sys.stdout:
             ostream.close()
         print 'Error writing at file "%s". %s' %(ofilename, e)
+        print 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno)
 
 if __name__ == '__main__':
 
@@ -211,6 +290,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--auth',nargs='?', metavar='credentials file', type=str,
         default=None, help='credentials file name') 
     argsr = parser.parse_args()
+    # print argsr
     filedir=argsr.output
     try:
         os.stat(filedir)
@@ -221,9 +301,9 @@ if __name__ == '__main__':
     for l in filenam.split():
         filename+=l+'_'
 
-    json_filename = filename[:-1]+'.json' # Where to store matching tweets
+    json_filename = filename[:-1]+'_dic.json' # Where to store matching tweets
     lookup_text = unicode(argsr.search,'utf-8')# Text to search for
-
+    # ids_filename = filename[:-1]+'_ids'
     outfile_name = os.path.join('%s' % filedir,json_filename)
    
     while True:
