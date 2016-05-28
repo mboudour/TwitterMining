@@ -79,6 +79,9 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
                 h,lolo=tpa.TweetToPandas(dici,r_or_p).users_as_dict_hash()
             if multihas:
                 h,lolo=tpa.TweetToPandas(dici,r_or_p).hsa_as_dic_hash()
+                # print h
+                # print lolo
+                # print aaa
             # nlolo=dict(lolo)
                 for hasht in h['hashtags']:
                     nlolo=dict(lolo)

@@ -90,9 +90,12 @@ class TweetToPandas(object):
                 # print hts,'+++++++++++++++++++++++++',type(hts)
                 for ht in hts:
                     # self.hashtags.add(ht)
+                    # print ht,'=================',type(ht)
                     if isinstance(ht,dict):
                         self.hashtags.add(ht['text'].lower().encode('utf-8'))
                     elif isinstance(ht,str):
+                        self.hashtags.add(ht.lower().encode('utf-8'))
+                    elif isinstance(ht,unicode):
                         self.hashtags.add(ht.lower().encode('utf-8'))
             # entities=dici.get('entities',None)
             # if entities!=None:
@@ -139,7 +142,7 @@ class TweetToPandas(object):
         if self.idt==None:
             self.idt=str(dici.get('id',''))
 
-        
+
         self.lang=dici.get('lang',None)
         self.retweet_count=dici.get('retweet_count',None)
         self.retweeted=dici.get('retweeted',None)
@@ -188,6 +191,7 @@ class TweetToPandas(object):
         # self.video=None
         # self.photo=None
         # self.dici=dici
+        # print self.hashtags
 
     def as_list(self):
         return [self.idt,self.lang,self.retweet_count,self.place,self.created_at,len(self.hashtags),len(self.photo),len(self.canttell),len(self.video)]
@@ -201,7 +205,7 @@ class TweetToPandas(object):
         return ({'hashtags':self.hashtags}, {'id':self.idt,'lang':self.lang,'retweet_count':self.retweet_count,'place':self.place,
         'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
          'coordinates':self.coordinates,'bounding':self.bbox,
-        'followers_count':self.followers_count,
+        'followers_count':self.followers_count,'user_id':self.user_id,'Mentions':self.mentions,
         'friends_count':self.friends_count,'statuses_count':self.statuses_count,'listed_count':self.listed_count})
 
     def users_as_dict_hash(self):
