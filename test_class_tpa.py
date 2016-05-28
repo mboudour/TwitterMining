@@ -69,6 +69,8 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
             # 
             # 
             # if all hashtags ...
+            # for k,v in dici.items():
+                # print k,v
             if selt=='r':
                 h,lolo=tpa.TweetToPandas(dici,r_or_p).as_dict_hash()
             elif selt=='p':
