@@ -197,25 +197,25 @@ class TweetToPandas(object):
         return [self.idt,self.lang,self.retweet_count,self.place,self.created_at,len(self.hashtags),len(self.photo),len(self.canttell),len(self.video)]
     def as_dict(self):
         # return {'id':self.idt,'lang':self.lang,'retweet count':self.retweet_count,'Place':self.place,'Created At':self.created_at,'Number of Hashtags':len(self.hashtags),'Number of Photos':len(self.photo),'Number of Cant tell':len(self.canttell),'Number of video':len(self.video)}
-        return {'id':self.idt,'lang':self.lang,'retweet_count':self.retweet_count,'place':self.place,'created_at':self.created_at,'hashtag_count':len(self.hashtags),'Number of Photos':len(self.photo),'Number of Cant tell':len(self.canttell),'Number of video':len(self.video),'coordinates':self.coordinates,'bounding':self.bbox}
+        return {'id':self.idt,'language':self.lang,'retweet_count':self.retweet_count,'place':self.place,'created_at':self.created_at,'hashtag_count':len(self.hashtags),'Number of Photos':len(self.photo),'Number of Cant tell':len(self.canttell),'Number of video':len(self.video),'coordinates':self.coordinates,'bounding':self.bbox}
 
     def as_dict_hash(self):
-        return ({'hashtags':self.hashtags},{'id':self.idt,'lang':self.lang,'retweet_count':self.retweet_count,'place':self.place,'created_at':self.created_at,'hashtag_count':len(self.hashtags),'Number of Photos':len(self.photo),'Number of Cant tell':len(self.canttell),'Number of video':len(self.video),'coordinates':self.coordinates,'bounding':self.bbox})
+        return ({'hashtags':self.hashtags},{'id':self.idt,'language':self.lang,'retweet_count':self.retweet_count,'place':self.place,'created_at':self.created_at,'hashtag_count':len(self.hashtags),'photo_count':len(self.photo),'undefined_count':len(self.canttell),'video_count':len(self.video),'coordinates':self.coordinates,'bounding':self.bbox})
     def hsa_as_dic_hash(self):
-        return ({'hashtags':self.hashtags}, {'id':self.idt,'lang':self.lang,'retweet_count':self.retweet_count,'place':self.place,
+        return ({'hashtags':self.hashtags}, {'id':self.idt,'language':self.lang,'retweet_count':self.retweet_count,'place':self.place,
         'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
          'coordinates':self.coordinates,'bounding':self.bbox,
-        'followers_count':self.followers_count,'user_id':self.user_id,'Mentions':self.mentions,
+        'followers_count':self.followers_count,'user_id':self.user_id,'mentions':self.mentions,
         'friends_count':self.friends_count,'statuses_count':self.statuses_count,'listed_count':self.listed_count})
 
     def users_as_dict_hash(self):
-        return ({'hashtags':self.hashtags}, {'id':self.idt,'lang':self.lang,
+        return ({'hashtags':self.hashtags}, {'id':self.idt,'language':self.lang,
         'retweet_count':self.retweet_count,  'place':self.place,
         'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
-        '#Photos':self.photo, '#Undefined':len(self.canttell),
-        'Mentions':self.mentions, 'mention_count':self.mention_count,
-        '#Videos':len(self.video), 'coordinates':self.coordinates,'bounding':self.bbox,
-        'screen_name':self.screen_name,'user_id':self.user_id,'followers_count':self.followers_count,
+        'photo_count':self.photo, 'undefined_count':len(self.canttell),
+        'mentions':self.mentions, 'mention_count':self.mention_count,
+        'video_count':len(self.video), 'coordinates':self.coordinates,'bounding':self.bbox,
+        'username':self.screen_name,'user_id':self.user_id,'followers_count':self.followers_count,
         'friends_count':self.friends_count,'statuses_count':self.statuses_count,'text':self.text,
         'listed_count':self.listed_count})
 # usdi['screen_name'],usdi['id_str'],usdi['followers_count'],usdi['friends_count'],usdi['statuses_count']
