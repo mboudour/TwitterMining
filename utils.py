@@ -45,6 +45,22 @@ def compare_val_with(pdf,val,time_freq='D',query_count=None):
         vold['tweets'].append(sum(k['count']))
         # vold[oval].append(sum(k['count']))
     return vold
+def compare_val_for_ret(pdf,val,time_freq='D',query_count=None):
+    ss=pd.DataFrame({'count':pdf.groupby([pd.Grouper(key='date_split',freq=time_freq),val]).size()}).reset_index()
+    if query_count!=None:
+        query='count >= %i' %query_count
+        ss=ss.query(query)
+    # print ss
+
+    ssdss=ss.groupby('date_split')
+    vold={'date_split':[],'retweets':[]}
+    for v,k in ssdss:
+        vold['date_split'].append(v.strftime('%Y%m%d'))
+        
+        # vold[val].append(sum(k['count']*k[val]))
+        vold['retweets'].append(sum(k['count']))
+        # vold[oval].append(sum(k['count']))
+    return vold
 
 def prepare_plot_for(pdf,val,time_freq='D',query_count=None):
     ss=pd.DataFrame({'count':pdf.groupby([pd.Grouper(key='date_split',freq=time_freq),val]).size()}).reset_index()
@@ -104,6 +120,7 @@ def most_common_of(pdf,val,httoadd=[],counts=10):
     # tes=5000
     # u=0
     for l in htdic:
+        # print l
         for li in l:
             ll.append(li)
 
