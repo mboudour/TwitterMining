@@ -1,5 +1,7 @@
 import pandas as pd
 from collections import Counter
+import itertools as it
+import networkx as nx
 
 def create_beaker_com_dict(sps):
     nsps={}
@@ -164,3 +166,53 @@ def prepare_plots_for_htmn(hpdf,val,httoaddc,time_freq='D'):
             for kk in sorted(v.keys()):
                 nsps[k].append(v[kk])
     return nsps
+
+# 
+# Graphs
+# 
+def create_conc_graph_for_ligh(pdf):
+    hastg=pdf.hashtags.tolist()
+    usernames=pdf.username.tolist()
+    isl=pdf['id'].tolist()
+    G=nx.Graph()
+    for i,hss in enumerate(hastg):
+    #     print l,type(l)
+    #     hss=json.loads(l)
+        if isinstance(hss,list):
+            if len(hss)>1:
+                for ii in it.combinations(hss,2):
+                    edg=tuple(sorted(ii))
+                    if G.has_edge(edg[0],edg[1]):
+                        wei =G[edg[0]][edg[1]]['weight']+1
+                    else:
+                        wei=1
+                    G.add_edge(edg[0],edg[1],weight=wei)
+
+    print len(G.nodes())
+    print len(G.edges())
+    return G
+
+def get_nodes_to_keep(graph,weight_cut=0):
+    # graph=G#nx.Graph(Gg)
+    print len(graph.nodes()),'==>',
+    noddd={}
+    nod_to_keep=set()
+    for i,nd in enumerate(graph.nodes()):
+        noddd[nd]=i
+
+        
+
+    for edd in graph.edges():
+    # for edd in graph_no_addr_ent.edges():
+        if 'weight' in graph[edd[0]][edd[1]]:
+            
+    #     if 'weight' in graph_no_addr_ent[edd[0]][edd[1]]:
+            wei=graph[edd[0]][edd[1]]['weight']
+            if wei>=weight_cut:
+                nod_to_keep.add(edd[0])
+                nod_to_keep.add(edd[1])
+            else:
+                continue
+    print len(nod_to_keep)
+    print 'with cutoff = %i' %weight_cut
+    return nod_to_keep
