@@ -78,11 +78,11 @@ class TweetToPandas(object):
             mens=dici.get('user_mentions',None)
             # print mens
             if mens!=None:
-                men_set=set()
+                men_set=[]
                 for mention in mens:
-                    men_set.add((mention['id'],mention['screen_name'].encode('utf-8')))
-                self.mention_count=len(men_set)
-                self.mentions=list(men_set)               
+                    men_set.append((mention['id'],mention['screen_name'].encode('utf-8')))
+                self.mention_count=len(set(men_set))
+                self.mentions=men_set               
             hts=dici.get('hashtags',None)
             # print dici
             # print '============='

@@ -148,7 +148,7 @@ def prepare_plots_for_htmn(hpdf,val,httoaddc,time_freq='D'):
     for name in httoaddc:
         hpdf[name]=hpdf.apply(add_column,args=(name,'hashtags'),axis=1)
     ss=hpdf.groupby('date_split').sum().reset_index()
-    dic={nam+'_count':hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
+    dic={"#"+nam:hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
     hss=pd.DataFrame(dic).reset_index()
     hss.rename(columns = {'level_0':'date_split'}, inplace = True)
     hss.fillna(0,inplace=True)
