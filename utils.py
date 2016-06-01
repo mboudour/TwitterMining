@@ -113,7 +113,7 @@ def search_in_list_lists(x,name,columnname):
     else: 
         return False
 
-def most_common_of(pdf,val,httoadd=[],counts=10):
+def most_common_of(pdf,val,httoadd=[],counts=10,verbo=False):
 
     htdic=pdf[val].tolist()
     # print len(htdic)
@@ -127,14 +127,19 @@ def most_common_of(pdf,val,httoadd=[],counts=10):
             ll.append(li)
 
     htcoun=Counter(ll)
+    if verbo:
+        # for k in sorted(htcoun,key=htcoun.get,reverse=True):
+        #     print k,htcoun[k]
+        print 'Total number of hashtags:%i' %len(htcoun)
+
     # print htcoun.most_common(10)
-    httoaddc=[i[0] for i in htcoun.most_common(10)]
+    httoaddc=[i[0] for i in htcoun.most_common(counts)]
     httoaddc
 
     for i in httoaddc:
         httoadd.append(i)
     httoaddss=list(set(httoadd))
-    return httoaddss
+    return httoaddss,htcoun
 
 def prepare_plots_for_htmn(hpdf,val,httoaddc,time_freq='D'):
 
