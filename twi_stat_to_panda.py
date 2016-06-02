@@ -35,11 +35,15 @@ class TweetToPandas(object):
                     for ht in hashtags:
                         self.hashtags.add(ht['text'].lower().encode('utf-8'))
                 if 'user_mentions' in entities:
-                    men_set=set()
+                    # men_set=set()
+                    men_set=[]
+
                     for mention in entities['user_mentions']:
-                        men_set.add((mention['id'],mention['screen_name'].encode('utf-8')))
+                        men_set.append((mention['id'],mention['screen_name'].encode('utf-8')))
                     self.mention_count=len(men_set)
-                    self.mentions=list(men_set)
+                    # self.mentions=list(men_set)
+                    self.mentions=men_set
+                    
                     # print type(entities['user_mentions']),entities['user_mentions']
                     # print len(entities['user_mentions'])
                     # print len(men_set)
