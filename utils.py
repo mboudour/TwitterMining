@@ -2,6 +2,7 @@ import pandas as pd
 from collections import Counter
 import itertools as it
 import networkx as nx
+import math
 
 def create_beaker_com_dict(sps):
     nsps={}
