@@ -315,3 +315,63 @@ def pol_subj_for_plot(pdf,time_freq='D'):
             nod_s[key]=v.values()
 
     return nod_s,spdf
+
+
+
+def create_centralities_list(G,maxiter=2000,pphi=5,centList=[]):
+    if len(centList)==0:
+        centList=['degree_centrality','closeness_centrality','betweenness_centrality',
+    'eigenvector_centrality','katz_centrality','page_rank']
+    cenLen=len(centList)
+    valus={}
+    # plt.figure(figsize=figsi)
+    for uu,centr in enumerate(centList):
+        if centr=='degree_centrality':
+            cent=nx.degree_centrality(G)
+            sstt='Degree Centralities'
+            ssttt='degree centrality'
+            valus[centr]=cent
+        elif centr=='closeness_centrality':
+            cent=nx.closeness_centrality(G)
+            sstt='Closeness Centralities'
+            ssttt='closeness centrality'
+            valus[centr]=cent
+
+        elif centr=='betweenness_centrality':
+            cent=nx.betweenness_centrality(G)
+            sstt='Betweenness Centralities'
+            ssttt='betweenness centrality'
+            valus[centr]=cent
+
+        elif centr=='eigenvector_centrality':
+            try:
+                cent=nx.eigenvector_centrality(G,max_iter=maxiter)
+                sstt='Eigenvector Centralities'
+                ssttt='eigenvector centrality'
+                valus[centr]=cent
+
+            except:
+                valus[centr]=None
+
+                continue
+        elif centr=='katz_centrality':
+            phi = (1+math.sqrt(pphi))/2.0 # largest eigenvalue of adj matrix
+            cent=nx.katz_centrality_numpy(G,1/phi-0.01)
+            sstt='Katz Centralities'
+            ssttt='Katz centrality'
+            valus[centr]=cent
+
+        elif centr=='page_rank':
+            try:
+                cent=nx.pagerank(G)
+                sstt='PageRank'
+                ssttt='pagerank'
+                valus[centr]=cent
+
+            except:
+                valus[centr]=None
+
+                continue
+        print '%s done!!!' %sstt
+
+    return valus
