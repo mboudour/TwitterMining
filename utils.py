@@ -141,7 +141,7 @@ def most_common_of(pdf,val,httoadd=[],counts=10,verbo=False):
     httoaddss=list(set(httoadd))
     return httoaddss,htcoun
 
-def prepare_plots_for_htmn(hpdf,val,httoaddc,time_freq='D'):
+def prepare_plots_for_htmn(hpdf,val,httoaddc,char_to_add='#',time_freq='D'):
 
     def search_in_list_lists(x,name,columnname):
         l=x[columnname]
@@ -153,9 +153,9 @@ def prepare_plots_for_htmn(hpdf,val,httoaddc,time_freq='D'):
         return search_in_list_lists(x,name,namelist)  
 
     for name in httoaddc:
-        hpdf[name]=hpdf.apply(add_column,args=(name,'hashtags'),axis=1)
+        hpdf[name]=hpdf.apply(add_column,args=(name,val),axis=1)
     ss=hpdf.groupby('date_split').sum().reset_index()
-    dic={"#"+nam:hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
+    dic={char_to_add+nam:hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
     hss=pd.DataFrame(dic).reset_index()
     hss.rename(columns = {'level_0':'date_split'}, inplace = True)
     hss.fillna(0,inplace=True)
@@ -172,6 +172,40 @@ def prepare_plots_for_htmn(hpdf,val,httoaddc,time_freq='D'):
                 nsps[k].append(v[kk])
     return nsps
 
+def prepare_plots_for_htmn_one(hpdf,val,httoaddc,char_to_add='#',time_freq='D'):
+    if len(httoaddc)>1:
+        print 'List must contain only one hashtag!!!!'
+        print aaaaaaaaaaaa
+
+    def search_in_list_lists(x,name,columnname):
+        l=x[columnname]
+        if any([name in i for i in l]):
+            return 1
+        else: 
+            return 0
+    def add_column(x,name,namelist):
+        return search_in_list_lists(x,name,namelist)  
+
+    for name in httoaddc:
+        hpdf[name]=hpdf.apply(add_column,args=(name,val),axis=1)
+    ss=hpdf.groupby('date_split').sum().reset_index()
+    dic={char_to_add+nam:hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
+    hss=pd.DataFrame(dic).reset_index()
+    # print hss.columns
+    hss.rename(columns = {'level_0':'date_split'}, inplace = True)
+    hss.fillna(0,inplace=True)
+    dic=hss[hss[httoaddc[0]]==1].to_dict()
+    nsps={}
+    for k,v in dic.items():
+        if k!=httoaddc[0]:
+            nsps[k]=[]
+        if k=='date_split':
+            for kk in sorted(v.keys()):
+                nsps[k].append(v[kk].strftime('%Y%m%d'))
+        elif k!=httoaddc[0]:
+            for kk in sorted(v.keys()):
+                nsps[k].append(v[kk])
+    return nsps
 # 
 # Graphs
 # 
@@ -221,3 +255,63 @@ def get_nodes_to_keep(graph,weight_cut=0):
     print len(nod_to_keep)
     print 'with cutoff = %i' %weight_cut
     return nod_to_keep
+
+def pol_subj_for_plot(pdf,time_freq='D'):
+    from textblob import TextBlob
+    from textblob import Sentence
+    spdf=pdf[['id','user_id','username','language','created_at','text','date_split']].reset_index()
+    def sentim_sent(stri):
+        try:
+            tt=Sentence(stri).sentiment
+        except Exception,e:
+            tt=(None,None)
+        return tt #[0],tt[1]
+
+    spdf['polarity subjectivity']=spdf.text.apply(sentim_sent)#lambda x: Sentence(x).sentiment)
+    spdf['polarity']=spdf['polarity subjectivity'].apply(lambda x: x[0])
+    spdf['subjectivity']=spdf['polarity subjectivity'].apply(lambda x: x[1])
+    spdf.dropna(axis=0,how='any', thresh=None, subset=['polarity','subjectivity'], inplace=True)
+    ss=spdf.groupby(pd.Grouper(key='date_split',freq=time_freq))
+    ssd=ss['polarity'].mean().reset_index()
+    pols=ssd.to_dict()
+    nod_s={}
+    for k,v in pols.items():
+        if k=='date_split':
+            vv=[ij.strftime('%Y%m%d') for ij in v.values()]
+            nod_s['date_split']=vv
+        else:
+            key=k+'_average'
+            nod_s[key]=v.values()
+    sss=ss['subjectivity'].mean().reset_index()
+    # print sss.columns
+    subj=sss.to_dict()
+    for k,v in subj.items():
+        if k!='date_split':
+            key=k+'_average'
+            nod_s[key]=v.values()    
+    mxs=ss['subjectivity'].max().reset_index()
+    msub=mxs.to_dict()
+    for k,v in msub.items():
+        if k!='date_split':
+            key=k+'_max'
+            nod_s[key]=v.values()
+    mns=ss['subjectivity'].min().reset_index()
+    msub=mns.to_dict()
+    for k,v in msub.items():
+        if k!='date_split':
+            key=k+'_min'
+            nod_s[key]=v.values()
+    mxs=ss['polarity'].max().reset_index()
+    msub=mxs.to_dict()
+    for k,v in msub.items():
+        if k!='date_split':
+            key=k+'_max'
+            nod_s[key]=v.values()
+    mns=ss['polarity'].min().reset_index()
+    msub=mns.to_dict()
+    for k,v in msub.items():
+        if k!='date_split':
+            key=k+'_min'
+            nod_s[key]=v.values()
+
+    return nod_s,spdf
