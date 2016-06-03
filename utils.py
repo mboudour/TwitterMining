@@ -158,19 +158,49 @@ def prepare_plots_for_htmn(hpdf,val,httoaddc,char_to_add='#',time_freq='D'):
     ss=hpdf.groupby('date_split').sum().reset_index()
     dic={char_to_add+nam:hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
     hss=pd.DataFrame(dic).reset_index()
-    hss.rename(columns = {'level_0':'date_split'}, inplace = True)
+    print hss.columns
+    if 'level_0' in hss:
+        hss.rename(columns = {'level_0':'date_split'}, inplace = True)
     hss.fillna(0,inplace=True)
-    dic=hss[hss['level_1']==1].to_dict()
-    nsps={}
-    for k,v in dic.items():
-        if k!='level_1':
-            nsps[k]=[]
-        if k=='date_split':
-            for kk in sorted(v.keys()):
-                nsps[k].append(v[kk].strftime('%Y%m%d'))
-        elif k!='level_1':
-            for kk in sorted(v.keys()):
-                nsps[k].append(v[kk])
+    if 'level_1' in hss:
+        dic=hss[hss['level_1']==1].to_dict()
+        nsps={}
+        for k,v in dic.items():
+            if k!='level_1':
+                nsps[k]=[]
+            if k=='date_split':
+                for kk in sorted(v.keys()):
+                    nsps[k].append(v[kk].strftime('%Y%m%d'))
+            elif k!='level_1':
+                for kk in sorted(v.keys()):
+                    nsps[k].append(v[kk])
+    else:
+        mcol=None
+        for col in list(hss.columns):
+            if col!='date_split':
+                if char_to_add not in col:
+                    if mcol==None:
+                        mcol=col
+                    else:
+                        print mcol
+                        print col
+                        print aaaa
+                        
+        dic=hss[hss[mcol]==1].to_dict()
+        nsps={}
+        for k,v in dic.items():
+            if k==mcol:
+                print k,v
+            if k!=mcol:
+                nsps[k]=[]
+            if k=='date_split':
+                for kk in sorted(v.keys()):
+                    nsps[k].append(v[kk].strftime('%Y%m%d'))
+            elif k!=mcol:
+#                 print k,v
+#                 print aaa
+                for kk in sorted(v.keys()):
+                    nsps[k].append(v[kk])
     return nsps
 
 def prepare_plots_for_htmn_one(hpdf,val,httoaddc,char_to_add='#',time_freq='D'):
