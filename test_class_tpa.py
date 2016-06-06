@@ -107,7 +107,7 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
     print pdf.columns
         # pdf['created_at']=pd.to_datetime(pdf['created_at'],format='%a %b %d %H:%M:%S +0000 %Y')
     if write_csv:
-        pdf.to_csv(outname)
+        pdf.to_csv(outname,header=True)
     return pdf,json_files
     # 
     # 
