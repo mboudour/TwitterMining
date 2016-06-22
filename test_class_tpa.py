@@ -16,6 +16,8 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
     if len(json_files) == 0:
         raise RuntimeError('No dump files to convert.')
     print json_files
+    lol=[]
+    seen=set()
 
     # fop = open('untitled.json')
     for filna in json_files:
@@ -25,9 +27,7 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
         # fop = open('/home/sergios-len/Documents/W5/Palestine_israel/06/tweets_palestine_abbas_netanyahu_israel_gaza_hash.json')
         # fop =open('/home/sergios-len/Documents/W5/Palestine_israel/01/gaza_palestine_hamas_Operation%20Cast%20Lead_israel_hash.json')
         # fop=open('/home/mab/MEGA/ObamaCare_18102013.json')
-        lol=[]
         u=0
-        seen=set()
         for fo in fop:
             try:
                 dici=json.loads(fo)
@@ -39,38 +39,6 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
                 # print e
                 continue
             
-
-            # print '==============================================================='
-            # print fo
-            # print dici.keys()
-            # # # print type(dici)
-            # # for k,v in dici.items():
-            # #     print k,v
-            # # print '**************************************************************'
-            # # for k,v in dici['retweeted_status'].items():
-            # #     print k,v
-            # # print '++++++++++++++++++++++++'
-            # # for kk,vv in dici['user'].items():
-            # #     print kk,vv
-            # print '-----------------------'
-            # # for k,v in dici['user'].items():
-            # #     print k,v
-            # print dici['id']
-            # print dici['coordinates']
-            # print dici['place']
-            # if dici['coordinates']!=None:
-            #     print aaaaa
-            # print aaa
-            # if dici['id'] in seen:
-            #     continue
-            # print tpa.TweetToPandas(dici).as_list()
-            # if number of hashtags per tweet uncomment next line
-            # lol.append(tpa.TweetToPandas(dici).as_dict())
-            # 
-            # 
-            # if all hashtags ...
-            # for k,v in dici.items():
-                # print k,v
             if selt=='r':
                 h,lolo=tpa.TweetToPandas(dici,r_or_p).as_dict_hash()
             elif selt=='p':
@@ -88,9 +56,16 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
                     nlolo['Hashtag']=hasht#.encode('utf-8')
                     lol.append(nlolo)
             # lolo['hashtags_list']=list(h['hashtags'])
+
             elif not multihas:
+                if h == False or dici['id'] in seen:
+                    continue
+
+
                 lol.append(lolo)    
             #  
+
+
             seen.add(dici['id'])
             if u >=tem:
                 print u

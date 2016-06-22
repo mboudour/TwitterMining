@@ -166,9 +166,15 @@ class TweetToPandas(object):
         #     self.place=unicode(place.get('full_name',None))
         # else:
         self.place=place
-        if useus:
+        if useus!=None:
             # print useus.keys()
-            self.screen_name=useus['screen_name'].encode('utf-8')
+            try:
+
+                self.screen_name=useus['screen_name'].encode('utf-8')
+            except Exception,e:
+                print useus.keys()
+                # return (False,False)
+                self.screen_name=None
             self.user_id=str(useus.get('id',None))
             self.followers_count=useus.get('followers_count',None)
             self.friends_count=useus.get('friends_count',None)
@@ -213,15 +219,18 @@ class TweetToPandas(object):
         'friends_count':self.friends_count,'statuses_count':self.statuses_count,'listed_count':self.listed_count})
 
     def users_as_dict_hash(self):
-        return ({'hashtags':self.hashtags}, {'id':self.idt,'language':self.lang,
-        'retweet_count':self.retweet_count,  'place':self.place,
-        'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
-        'photo_count':self.photo, 'undefined_count':len(self.canttell),
-        'mentions':self.mentions, 'mention_count':self.mention_count,
-        'video_count':len(self.video), 'coordinates':self.coordinates,'bounding':self.bbox,
-        'username':self.screen_name,'user_id':self.user_id,'followers_count':self.followers_count,
-        'friends_count':self.friends_count,'statuses_count':self.statuses_count,'text':self.text,
-        'listed_count':self.listed_count})
+        if self.screen_name == None or self.created_at == None or self.idt == None:
+            return (False,False)
+        else:
+            return ({'hashtags':self.hashtags}, {'id':self.idt,'language':self.lang,
+            'retweet_count':self.retweet_count,  'place':self.place,
+            'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
+            'photo_count':self.photo, 'undefined_count':len(self.canttell),
+            'mentions':self.mentions, 'mention_count':self.mention_count,
+            'video_count':len(self.video), 'coordinates':self.coordinates,'bounding':self.bbox,
+            'username':self.screen_name,'user_id':self.user_id,'followers_count':self.followers_count,
+            'friends_count':self.friends_count,'statuses_count':self.statuses_count,'text':self.text,
+            'listed_count':self.listed_count})
 # usdi['screen_name'],usdi['id_str'],usdi['followers_count'],usdi['friends_count'],usdi['statuses_count']
 # 
 # self.screen_name=None

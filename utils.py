@@ -84,15 +84,23 @@ def prepare_plot_for(pdf,val,time_freq='D',query_count=None):
         nsps['volume'].append(vk)
     return nsps
 
-def prepare_plot_ids(pdf,val,time_freq='D',query_count=None):
+def prepare_plot_ids(pdf,val,time_freq='D',query_count=None,verbo=False):
 
     ss=pd.DataFrame({'count':pdf.groupby([pd.Grouper(key='date_split',freq=time_freq),val]).size()}).reset_index()
     if query_count!=None:
         query='count >= %i' %query_count
         ss=ss.query(query)
+    if verbo:
+        print 'done first'
     ssp=ss.pivot(index='date_split',columns=val,values='count').fillna(0).reset_index()
+    if verbo:
+        print 'done pivot'
     sps=ssp.to_dict()
+    if verbo:
+        print 'done dict'
     nsps=create_beaker_com_dict(sps)
+    if verbo:
+        print 'nsps'
     nk=nsps.keys()
     nsps['volume']=[]
     vold={}

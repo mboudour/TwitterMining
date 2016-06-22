@@ -33,9 +33,9 @@ class  SearchTwitter
         @to = to
         @browser = Capybara::Session.new(:selenium)
         if hashtag
-            remote_base_url = "https://twitter.com/search?vertical=default&q=%23#{@searchterm}%20since%3A#{@from}%20until%3A#{@to}&src=typd"
+            remote_base_url = "https://twitter.com/search?q=%23#{@searchterm}%20since%3A#{@from}%20until%3A#{@to}&src=typd"
         else
-            remote_base_url = "https://twitter.com/search?vertical=default&q=#{@searchterm}%20since%3A#{@from}%20until%3A#{@to}&src=typd"
+            remote_base_url = "https://twitter.com/search?q=#{@searchterm}%20since%3A#{@from}%20until%3A#{@to}&src=typd"
         end
         @browser.visit remote_base_url
     end
