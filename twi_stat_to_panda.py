@@ -25,7 +25,7 @@ class TweetToPandas(object):
         useus=dici.get('user',None)
         # self.text=dici['text'].encode('utf-8')
         # print dici
-        print dici.keys()
+        # print dici.keys()
         if r_or_p=='ruby':
 
             entities=dici.get('entities',None)
@@ -215,7 +215,7 @@ class TweetToPandas(object):
     def hsa_as_dic_hash(self):
         return ({'hashtags':self.hashtags}, {'id':self.idt,'language':self.lang,'retweet_count':self.retweet_count,'place':self.place,
         'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
-         'coordinates':self.coordinates,'bounding':self.bbox,
+         'coordinates':self.coordinates,'bounding':self.bbox,'retweeted':self.retweeted,
         'followers_count':self.followers_count,'user_id':self.user_id,'mentions':self.mentions,'reply_to':self.in_reply_to_user_id_str,
         'friends_count':self.friends_count,'statuses_count':self.statuses_count,'listed_count':self.listed_count})
 
@@ -231,7 +231,7 @@ class TweetToPandas(object):
             'video_count':len(self.video), 'coordinates':self.coordinates,'bounding':self.bbox,
             'username':self.screen_name,'user_id':self.user_id,'followers_count':self.followers_count,
             'friends_count':self.friends_count,'statuses_count':self.statuses_count,'text':self.text,
-            'listed_count':self.listed_count,'reply_to':self.in_reply_to_user_id_str})
+            'listed_count':self.listed_count,'reply_to':self.in_reply_to_user_id_str,'retweeted':self.retweeted})
 # usdi['screen_name'],usdi['id_str'],usdi['followers_count'],usdi['friends_count'],usdi['statuses_count']
 # 
 # self.screen_name=None
