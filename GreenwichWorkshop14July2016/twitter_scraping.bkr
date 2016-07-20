@@ -1,0 +1,2026 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "IRuby",
+            "plugin": "IRuby",
+            "setup": "",
+            "view": {
+                "cm": {
+                    "mode": "ruby"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "markdownHA4YHA",
+            "type": "markdown",
+            "body": [
+                "# Twitter Scraping in Ruby",
+                "## By Sergios Lenis & Moses Boudourides"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeSHLDmM",
+            "type": "code",
+            "evaluator": "IRuby",
+            "input": {
+                "body": [
+                    "require 'fileutils'",
+                    "# gem install capybara",
+                    "# gem install pry",
+                    "# gem install selenium-webdriver",
+                    "# gem install chromedriver-helper",
+                    "# gem install twitter",
+                    "script_dir='/Users/mosesboudourides/GithubRepositories/TwitterMining/'",
+                    "# script_dir='/home/sergios-len/Documents/githubs/TwitterMining/'",
+                    "# script_dir='/home/mab/github_repos/TwitterMining/'",
+                    "whereiam= Dir.pwd",
+                    "Dir.chdir script_dir",
+                    "print Dir.pwd",
+                    "require_relative script_dir+'twitter_scrap'",
+                    "out_dir='/Users/mosesboudourides/twitTemp/Output'",
+                    "# out_dir='/home/sergios-len/Documents/githubs/TwitterMining/Output'",
+                    "# out_dir='/home/mab/Desktop/twitTemp/Output'",
+                    "Dir.chdir out_dir"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "/home/mab/github_repos/TwitterMining"
+                        }
+                    ],
+                    "payload": "<div class=\"output_subarea output_text\"><pre>0</pre></div>"
+                },
+                "selectedType": "Results",
+                "pluginName": "IRuby",
+                "shellId": "1BB70A1B7D404CD4A823783B2CBC100B",
+                "elapsedTime": 1024,
+                "height": 71
+            },
+            "evaluatorReader": false,
+            "lineCount": 17
+        },
+        {
+            "id": "codegizQzP",
+            "type": "code",
+            "evaluator": "IRuby",
+            "input": {
+                "body": [
+                    "require 'fileutils'",
+                    "# gem install capybara",
+                    "# gem install pry",
+                    "# gem install selenium-webdriver",
+                    "# gem install chromedriver-helper",
+                    "# gem install twitter",
+                    "script_dir='/Users/mosesboudourides/GithubRepositories/TwitterMining/'",
+                    "# script_dir='/home/sergios-len/Documents/githubs/TwitterMining/'",
+                    "# script_dir='/home/mab/github_repos/TwitterMining/'",
+                    "whereiam= Dir.pwd",
+                    "Dir.chdir script_dir",
+                    "print Dir.pwd",
+                    "require_relative script_dir+'twitter_scrap'",
+                    "out_dir='/Users/mosesboudourides/twitTemp/Output'",
+                    "# out_dir='/home/sergios-len/Documents/githubs/TwitterMining/Output'",
+                    "# out_dir='/home/mab/Desktop/twitTemp/Output'",
+                    "Dir.chdir out_dir",
+                    "",
+                    "with_time_zone  'UTC' do #'America/New_York'",
+                    "  # searchterm='EUSN' #hashtag=true",
+                    "  # searchterm='day%20night%20paris' #hashtag=false",
+                    "  searchterm='%40MediaGovGr' #hashtag=false",
+                    "  from='2016-01-01'",
+                    "  pages = 100 #500 You have to figure out what is yours browser capabilities",
+                    "  cccc = 50",
+                    "  to = '2016-07-01'",
+                    "  check = nil",
+                    "  begin",
+                    "    t_search=SearchTwitter.new(searchterm,from,to,hashtag=true)",
+                    "    t_search.scrap_twitter_page(pages,cccc)",
+                    "    new_to=t_search.get_date",
+                    "",
+                    "    new_to = t_search.get_date",
+                    "  #     p check,new_to, 'check first'",
+                    "    if check == new_to",
+                    "        t_search.write_html",
+                    "        t_search.close_search",
+                    "        puts 'Done'",
+                    "        break",
+                    "    end",
+                    "",
+                    "",
+                    "    new_to_day = new_to.prev_day.day",
+                    "    puts new_to.hour",
+                    "    if  Date.new(new_to.year,new_to.mon,new_to.mday).to_s <= from",
+                    "        t_search.write_html",
+                    "        t_search.close_search",
+                    "        puts 'Finish searching'",
+                    "        break",
+                    "",
+                    "    elsif new_to.hour < 8 ",
+                    "        npages = pages",
+                    "        begin",
+                    "            t_search.scrap_twitter_page(cccc * 2 , 25,npages)",
+                    "            new_to = t_search.get_date",
+                    "            if check == nil ",
+                    "                check= new_to",
+                    "            elsif check > new_to",
+                    "                check = new_to",
+                    "            elsif check == new_to",
+                    "                puts 'I m out'",
+                    "                break   ",
+                    "            end",
+                    "            npages += cccc*2",
+                    "        end until (new_to.day <=> new_to_day) == -1 ",
+                    "    end",
+                    "    puts 'Still scraping'",
+                    "    nto= new_to.next",
+                    "    to = Date.new(nto.year,nto.mon,nto.mday).to_s",
+                    "    tot = Date.new(new_to.year,new_to.mon,new_to.mday).to_s",
+                    "  #   puts to,tot",
+                    "    t_search.write_html",
+                    "    t_search.close_search",
+                    "  end until from == tot ",
+                    "end"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 1\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 2\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 3\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 4\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 5\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 6\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 7\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 8\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 9\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 10\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 11\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 12\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 13\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 14\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 15\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 16\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 17\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 18\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 19\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 20\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 21\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 22\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 23\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 24\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 25\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 26\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 27\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 28\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 29\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 30\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 31\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 32\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 33\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 34\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 35\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 36\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 37\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 38\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 39\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 40\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 41\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 42\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 43\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 44\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 45\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 46\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 47\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 48\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 49\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 50\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 51\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 52\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 53\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 54\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 55\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 56\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 57\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 58\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 59\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 60\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 61\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 62\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 63\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 64\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 65\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 66\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 67\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 68\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 69\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 70\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 71\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 72\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 73\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 74\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 75\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 76\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 77\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 78\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 79\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 80\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 81\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 82\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 83\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 84\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 85\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 86\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 87\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 88\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 89\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 90\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 91\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 92\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 93\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 94\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 95\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 96\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 97\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 98\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 99\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 100\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 547 ids until 12:40 AM - 5 Jan 2016\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 547 ids until 12:40 AM - 5 Jan 2016\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "0\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 101\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 102\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 103\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 104\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 105\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 106\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 107\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 108\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 109\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 110\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 111\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 112\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 113\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 114\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 115\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 116\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 117\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 118\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 119\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 120\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 121\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 122\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 123\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 124\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 125\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 126\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 127\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 128\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 129\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 130\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 131\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 132\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 133\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 134\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 135\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 136\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 137\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 138\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 139\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 140\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 141\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 142\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 143\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 144\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 145\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 146\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 147\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 148\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 149\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 150\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 151\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 152\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 153\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 154\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 155\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 156\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 157\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 158\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 159\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 160\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 161\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 162\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 163\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 164\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 165\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 166\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 167\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 168\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 169\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 170\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 171\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 172\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 173\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 174\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 175\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 176\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 177\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 178\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 179\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 180\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 181\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 182\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 183\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 184\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 185\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 186\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 187\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 188\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 189\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 190\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 191\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 192\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 193\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 194\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 195\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 196\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 197\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 198\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 199\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 200\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 547 ids until 12:40 AM - 5 Jan 2016\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 201\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 202\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 203\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 204\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 205\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 206\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 207\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 208\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 209\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 210\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 211\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 212\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 213\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 214\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 215\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 216\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 217\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 218\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 219\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 220\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 221\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 222\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 223\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 224\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 225\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 226\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 227\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 228\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 229\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 230\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 231\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 232\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 233\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 234\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 235\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 236\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 237\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 238\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 239\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 240\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 241\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 242\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 243\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 244\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 245\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 246\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 247\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 248\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 249\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 250\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 251\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 252\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 253\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 254\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 255\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 256\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 257\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 258\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 259\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 260\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 261\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 262\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 263\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 264\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 265\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 266\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 267\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 268\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 269\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 270\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 271\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 272\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 273\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 274\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 275\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 276\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 277\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 278\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 279\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 280\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 281\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 282\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 283\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 284\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 285\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 286\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 287\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 288\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 289\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 290\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 291\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 292\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 293\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 294\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 295\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 296\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 297\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 298\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 299\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 300\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 547 ids until 12:40 AM - 5 Jan 2016\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "I m out\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Still scraping\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "%40MediaGovGr__2016-01-01/\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "/home/mab/Desktop/twitTemp/Output\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 1\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 2\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 3\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 4\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 5\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 6\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 7\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 8\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 9\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 10\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 11\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 12\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 13\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 14\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 15\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 16\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 17\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 18\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 19\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 20\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 21\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 22\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 23\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 24\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 25\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 26\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 27\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 28\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 29\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 30\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 31\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 32\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 33\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 34\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 35\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 36\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 37\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 38\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 39\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 40\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 41\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 42\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 43\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 44\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 45\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 46\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 47\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 48\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 49\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 50\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 51\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 52\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 53\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 54\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 55\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 56\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 57\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 58\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 59\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 60\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 61\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 62\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 63\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 64\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 65\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 66\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 67\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 68\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 69\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 70\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 71\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 72\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 73\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 74\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 75\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 76\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 77\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 78\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 79\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 80\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 81\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 82\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 83\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 84\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 85\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 86\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 87\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 88\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 89\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 90\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 91\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 92\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 93\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 94\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 95\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 96\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 97\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 98\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 99\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Downloading page: 100\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "show to show stats, q to quit!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 2 ids until 12:40 AM - 5 Jan 2016\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 2 ids until 12:40 AM - 5 Jan 2016\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "%40MediaGovGr__2016-01-01/\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "/home/mab/Desktop/twitTemp/Output\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Done\n"
+                        }
+                    ]
+                },
+                "selectedType": "Results",
+                "pluginName": "IRuby",
+                "shellId": "1BB70A1B7D404CD4A823783B2CBC100B",
+                "elapsedTime": 602434,
+                "height": 51,
+                "hidden": true
+            },
+            "evaluatorReader": false,
+            "lineCount": 75
+        },
+        {
+            "id": "codec5wtS7",
+            "type": "code",
+            "evaluator": "IRuby",
+            "input": {
+                "body": [
+                    "script_dir='/Users/mosesboudourides/GithubRepositories/TwitterMining/'",
+                    "",
+                    "Dir.chdir script_dir",
+                    "require_relative script_dir+'nokogiri_get_tweet_ids'",
+                    "# out_dir='/home/sergios-len/Documents/githubs/TwitterMining/Output'",
+                    "# auth_dir='/home/sergios-len/Documents/githubs/TwitterMining/credentials/auth_cred.txt'",
+                    "# auth_dir='/home/mab/github_repos/TwitterMining/credentials/auth_cred.txt'",
+                    "auth_dir='/Users/mosesboudourides/twitTemp/credentials/auth_cred.txt'",
+                    "# Dir.chdir out_dir"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "<div class=\"output_subarea output_text\"><pre>\"/home/mab/Desktop/twitTemp/credentials/auth_cred.txt\"</pre></div>",
+                "selectedType": "Html",
+                "pluginName": "IRuby",
+                "shellId": "1BB70A1B7D404CD4A823783B2CBC100B",
+                "elapsedTime": 744,
+                "height": 53
+            },
+            "evaluatorReader": false,
+            "lineCount": 9
+        },
+        {
+            "id": "codeecfOLp",
+            "type": "code",
+            "evaluator": "IRuby",
+            "input": {
+                "body": [
+                    "out_dir='/Users/mosesboudourides/twitTemp/Output'",
+                    "",
+                    "full_search_names,list_of_tweets,hash_of_tweets=parse_html(out_dir)",
+                    "puts hash_of_tweets",
+                    "folo=File.join(out_dir,\"twetts_ids_#{full_search_names.uniq.join('_')}.ids\")",
+                    "puts \" #{list_of_tweets.flatten.count} ids found\"",
+                    "File.open(folo, \"w\"){|to_file| list_of_tweets.each {|uu| to_file.write(uu.to_json+ \"\\n\")}}",
+                    "id_list = list_of_tweets.flatten.uniq.each_slice(100)",
+                    "authkeys=auth_parse(auth_dir)",
+                    "",
+                    "client= auth_client(authkeys)",
+                    "json_list = Array.new()",
+                    "id_list.each  do |u| ",
+                    "",
+                    "    begin",
+                    "    json_list <<  client.statuses(u)",
+                    "    rescue Twitter::Error::TooManyRequests => error",
+                    "        puts 'Waiting for 15...or better...'",
+                    "        sleep error.rate_limit.reset_in + 1",
+                    "        retry",
+                    "",
+                    "    end",
+                    "end",
+                    "",
+                    "fololo=File.join(out_dir,\"#{full_search_names.uniq.join('_')}_hash.json\")",
+                    "",
+                    "jj = json_list.flatten.uniq.collect {|u|  u.to_hash}",
+                    "File.open(fololo,'a') {|to_file| jj.each {|uu| to_file.write(uu.to_json+ \"\\n\")}}",
+                    "puts \"#{jj.count} tweets found!!!!\"",
+                    "p \"Saved as #{fololo}\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "IRuby",
+                "shellId": "1BB70A1B7D404CD4A823783B2CBC100B",
+                "elapsedTime": 9367,
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Found 2 tweets... for %40MediaGovGr\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 547 tweets... for %40MediaGovGr\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "Found 120 tweets... for %40MediaGovGr\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "{\"%40MediaGovGr\"=>669}\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": " 669 ids found\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "564 tweets found!!!!\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "\"Saved as /home/mab/Desktop/twitTemp/Output/%40MediaGovGr_hash.json\""
+                        },
+                        {
+                            "type": "out",
+                            "value": "\n"
+                        }
+                    ],
+                    "payload": "<div class=\"output_subarea output_text\"><pre>\"Saved as /home/mab/Desktop/twitTemp/Output/%40MediaGovGr_hash.json\"</pre></div>"
+                },
+                "height": 183
+            },
+            "evaluatorReader": false,
+            "lineCount": 30
+        }
+    ],
+    "namespace": {},
+    "metadata": {
+        "publication-id": "ee134c26-2b23-11e6-abb8-6fa10fd07640"
+    }
+}
