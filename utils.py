@@ -4,13 +4,16 @@ import itertools as it
 import networkx as nx
 import math
 
-def create_beaker_com_dict(sps):
+def create_beaker_com_dict(sps,time_freq='D'):
     nsps={}
     for k,v in sps.items():
         nsps[k]=[]
         if k=='date_split':
             for kk in sorted(v.keys()):
-                nsps[k].append(v[kk].strftime('%Y%m%d'))
+                if time_freq=='D':
+                    nsps[k].append(v[kk].strftime('%Y%m%d'))
+                elif time_freq=='H':
+                    nsps[k].append(v[kk].strftime('%Y%m%d %H:%M:%S'))
         else:
             for kk in sorted(v.keys()):
                 nsps[k].append(v[kk])
@@ -143,7 +146,7 @@ def most_common_of(pdf,val,httoadd=[],counts=10,verbo=False):
 
     # print htcoun.most_common(10)
     httoaddc=[i[0] for i in htcoun.most_common(counts)]
-    httoaddc
+    print httoaddc
 
     for i in httoaddc:
         httoadd.append(i)
@@ -163,6 +166,8 @@ def prepare_plots_for_htmn(hpdf,val,httoaddc,char_to_add='#',time_freq='D'):
 
     for name in httoaddc:
         hpdf[name]=hpdf.apply(add_column,args=(name,val),axis=1)
+        # hpdf.loc[:,name]=hpdf.apply(add_column,args=(name,val),axis=1)
+
     ss=hpdf.groupby('date_split').sum().reset_index()
     dic={char_to_add+nam:hpdf.groupby([pd.Grouper(key='date_split',freq=time_freq),nam]).size() for nam in httoaddc}
     hss=pd.DataFrame(dic).reset_index()
@@ -310,6 +315,7 @@ def pol_subj_for_plot(pdf,time_freq='D'):
     spdf['polarity']=spdf['polarity subjectivity'].apply(lambda x: x[0])
     spdf['subjectivity']=spdf['polarity subjectivity'].apply(lambda x: x[1])
     spdf.dropna(axis=0,how='any', thresh=None, subset=['polarity','subjectivity'], inplace=True)
+    # print spdf[pd.isnull(spdf.polarity) ]
     ss=spdf.groupby(pd.Grouper(key='date_split',freq=time_freq))
     ssd=ss['polarity'].mean().reset_index()
     pols=ssd.to_dict()

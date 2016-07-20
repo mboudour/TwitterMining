@@ -5,7 +5,7 @@ import json
 
 class TweetToPandas(object):
     """docstring for TweetToPandas"""
-    def __init__(self, dici,r_or_p):
+    def __init__(self, dici,r_or_p,verbose=True):
         super(TweetToPandas, self).__init__()
         # self.arg = arg
 
@@ -25,7 +25,7 @@ class TweetToPandas(object):
         useus=dici.get('user',None)
         # self.text=dici['text'].encode('utf-8')
         # print dici
-        # print dici.keys()
+        print dici.keys()
         if r_or_p=='ruby':
 
             entities=dici.get('entities',None)
@@ -144,13 +144,13 @@ class TweetToPandas(object):
         self.created_at=dici.get('created_at',None)
         self.idt=dici.get('id_str',None)
         if self.idt==None:
-            self.idt=str(dici.get('id',''))
+            self.idt=str(dici.get('id',None))
 
 
         self.lang=dici.get('lang',None)
         self.retweet_count=dici.get('retweet_count',None)
         self.retweeted=dici.get('retweeted',None)
-        self.in_reply_to_user_id_str=dici.get('in_reply_to_user_id_str',None)
+        self.in_reply_to_user_id_str=str(dici.get('in_reply_to_user_id',None))
         # coord=dici.get('coordinates',None)
         # if coord != None:
         #     self.coordinates=coord.get('coordinates',None)
@@ -172,7 +172,8 @@ class TweetToPandas(object):
 
                 self.screen_name=useus['screen_name'].encode('utf-8')
             except Exception,e:
-                print useus.keys()
+                if verbose:
+                    print useus.keys()
                 # return (False,False)
                 self.screen_name=None
             self.user_id=str(useus.get('id',None))
@@ -189,7 +190,7 @@ class TweetToPandas(object):
             self.listed_count=None
         # print aaaa
         text=dici.get('text',None)
-        if text ==None:
+        if text ==None and verbose:
             print 'Visit https://twitter.com/%s/status/%s' %(self.screen_name,self.idt)
             # print dici
             # print '==================='
@@ -215,7 +216,7 @@ class TweetToPandas(object):
         return ({'hashtags':self.hashtags}, {'id':self.idt,'language':self.lang,'retweet_count':self.retweet_count,'place':self.place,
         'created_at':self.created_at,'hashtag_count':len(self.hashtags),'hashtags':list(self.hashtags),
          'coordinates':self.coordinates,'bounding':self.bbox,
-        'followers_count':self.followers_count,'user_id':self.user_id,'mentions':self.mentions,
+        'followers_count':self.followers_count,'user_id':self.user_id,'mentions':self.mentions,'reply_to':self.in_reply_to_user_id_str,
         'friends_count':self.friends_count,'statuses_count':self.statuses_count,'listed_count':self.listed_count})
 
     def users_as_dict_hash(self):
@@ -230,7 +231,7 @@ class TweetToPandas(object):
             'video_count':len(self.video), 'coordinates':self.coordinates,'bounding':self.bbox,
             'username':self.screen_name,'user_id':self.user_id,'followers_count':self.followers_count,
             'friends_count':self.friends_count,'statuses_count':self.statuses_count,'text':self.text,
-            'listed_count':self.listed_count})
+            'listed_count':self.listed_count,'reply_to':self.in_reply_to_user_id_str})
 # usdi['screen_name'],usdi['id_str'],usdi['followers_count'],usdi['friends_count'],usdi['statuses_count']
 # 
 # self.screen_name=None

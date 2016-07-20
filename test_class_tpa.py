@@ -6,7 +6,7 @@ import pandas as pd
 import glob
 import sys
 import os
-def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
+def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby',verbose=True,seen=set()):
     # print fildir
     # print selt
     # print outname
@@ -15,10 +15,11 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
     json_files = glob.glob('*.json')
     if len(json_files) == 0:
         raise RuntimeError('No dump files to convert.')
-    print json_files
+    if verbose:
+        print json_files
     lol=[]
-    seen=set()
-
+    # seen=set()
+    pdf=None
     # fop = open('untitled.json')
     for filna in json_files:
         cos=400000
@@ -60,25 +61,51 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby'):
             elif not multihas:
                 if h == False or dici['id'] in seen:
                     continue
-
-
+                # print len(lolo)
+                # print lolo
+                # ppd=pd.DataFrame(lolo)
                 lol.append(lolo)    
             #  
-
+            # print len(seen)
 
             seen.add(dici['id'])
             if u >=tem:
                 print u
+
                 # break
                 # print aaaaa
                 tem +=cos
+                if isinstance(pdf,pd.DataFrame):#==None:
+                    ppd=pd.DataFrame(lol)
+                    pdf=pd.concat([pdf,ppd],ignore_index=True)
+                    lol=[]
+                    
+                else:
+                    pdf=pd.DataFrame(lol)
+                    lol=[]
+                # print pdf.info()
             u+=1
+
+            # if pdf==None:
+            #     pdf=ppd
+            # else:
+            #     pdf.append(ppd)#,ignore_index=True)
         # print aaaaaa
-        print len(lol)
+        if verbose:
+            print filna
+            print len(lol)
         # print lol[-1]
         # print lol[-2]
         # print aaaa
-    pdf=pd.DataFrame(lol)
+    # pdf=pd.DataFrame(lol)
+    if isinstance(pdf,pd.DataFrame):#==None:
+        ppd=pd.DataFrame(lol)
+        pdf=pd.concat([pdf,ppd],ignore_index=True)
+        lol=[]
+        
+    else:
+        pdf=pd.DataFrame(lol)
+        lol=[]
     print pdf.columns
         # pdf['created_at']=pd.to_datetime(pdf['created_at'],format='%a %b %d %H:%M:%S +0000 %Y')
     if write_csv:
