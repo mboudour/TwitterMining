@@ -6,7 +6,7 @@ import pandas as pd
 import glob
 import sys
 import os
-def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby',verbose=True,seen=set()):
+def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby',verbose=True,seen=set(),htadds=None):
     # print fildir
     # print selt
     # print outname
@@ -46,20 +46,36 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby',v
                 h,lolo=tpp.TweetToPandas(dici,r_or_p).as_dict_hash()
             elif selt=='rr':
                 h,lolo=tpa.TweetToPandas(dici,r_or_p).users_as_dict_hash()
+            seene=dici.get('id',None)
             if multihas:
-                h,lolo=tpa.TweetToPandas(dici,r_or_p).hsa_as_dic_hash()
+                # h,lolo=tpa.TweetToPandas(dici,r_or_p).hsa_as_dic_hash()
+
+                h,lolo=tpa.TweetToPandas(dici,r_or_p).users_as_dict_hash()
                 # print h
                 # print lolo
+                # print seene
+                
+                if h == False or seene in seen:
+                    continue
+                
                 # print aaa
             # nlolo=dict(lolo)
                 for hasht in h['hashtags']:
-                    nlolo=dict(lolo)
-                    nlolo['Hashtag']=hasht#.encode('utf-8')
-                    lol.append(nlolo)
-            # lolo['hashtags_list']=list(h['hashtags'])
+                    if htadds==None:
+                        nlolo=dict(lolo)
+                        nlolo['Hashtag']=hasht#.encode('utf-8')
+                        lol.append(nlolo)
+                        # print 'none'
+                    elif hasht in htadds:
 
+                        nlolo=dict(lolo)
+                        nlolo['Hashtag']=hasht#.encode('utf-8')
+                        lol.append(nlolo)
+                        # print hasht,htadds,nlolo
+            # lolo['hashtags_list']=list(h['hashtags'])
+            
             elif not multihas:
-                if h == False or dici['id'] in seen:
+                if h == False or seene in seen:
                     continue
                 # print len(lolo)
                 # print lolo
@@ -67,8 +83,8 @@ def create_df(fildir,selt,outname,write_csv=False,multihas=False,r_or_p='ruby',v
                 lol.append(lolo)    
             #  
             # print len(seen)
-
-            seen.add(dici['id'])
+            if seene != None:
+                seen.add(seene)
             if u >=tem:
                 print u
 
