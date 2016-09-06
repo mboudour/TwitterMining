@@ -146,7 +146,7 @@ class TweetToPandas(object):
         if self.idt==None:
             self.idt=str(dici.get('id',None))
 
-
+ 
         self.lang=dici.get('lang',None)
         self.retweet_count=dici.get('retweet_count',None)
         self.retweeted=dici.get('retweeted',None)
