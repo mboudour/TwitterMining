@@ -191,6 +191,7 @@ class TweetToPandas(object):
         # print aaaa
         text=dici.get('text',None)
         if text ==None and verbose:
+            self.text=u''
             print 'Visit https://twitter.com/%s/status/%s' %(self.screen_name,self.idt)
             # print dici
             # print '==================='
