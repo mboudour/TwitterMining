@@ -4,6 +4,13 @@ import itertools as it
 import networkx as nx
 import math
 
+# remote importing
+# import os, sys, inspect
+ # realpath() will make your script run, even if you symlink it :)
+# cmd_folder = os.path.realpath('/home/sergios-len/Documents/W5/Travels/madrid_workshop/madrid workshop')
+# if cmd_folder not in sys.path:
+#     sys.path.insert(0, cmd_folder)
+
 def create_beaker_com_dict(sps,time_freq='D'):
     nsps={}
     for k,v in sps.items():
