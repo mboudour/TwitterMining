@@ -9,6 +9,7 @@ Vagrant.configure(2) do |config|
 
   # config.vm.box = "ubuntu/trusty64"
   config.vm.box = "hashicorp/precise64"
+  config.vm.box = "ubuntu/trusty64"
 
   config.vm.network "forwarded_port", guest: 8888, host: 8888
 
@@ -21,7 +22,7 @@ Vagrant.configure(2) do |config|
     # vb.memory = "256" # if y
   end
   config.vm.provision :shell, path: "bootstrap.sh"
-  config.vm.provision :shell, path: 'loader.hs', privileged: false
+  config.vm.provision :shell, path: 'loader.sh', privileged: false
 
   # config.vm.provision "shell", inline: <<-SHELL
   #   sudo apt-get update
