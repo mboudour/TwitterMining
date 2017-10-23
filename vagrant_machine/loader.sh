@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-pip install --user --upgrade pip
+# pip install --user --upgrade pip
+pip install IPython==5.0 --user
 pip install --user jupyter
 pip install --user pandas
 pip install --user numpy
@@ -20,4 +21,6 @@ gem install chromedriver-helper
 gem install twitter
 gem install capybara
 
-jupyter notebook --notebook-dir=/vagrant/notebook --no-browser --ip=0.0.0.0 &
+echo "export PATH=$PATH:$HOME/.local/bin # Add jupyter and other pip installed" >> /home/vagrant/.bashrc
+source ~/.bashrc
+# jupyter notebook --notebook-dir=/vagrant/notebook --no-browser --ip=0.0.0.0 
