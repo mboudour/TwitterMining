@@ -3,6 +3,8 @@
 pip install --user --upgrade pip
 pip install --user jupyter
 pip install --user pandas
+pip install --user numpy
+pip install --user scipy
 pip install --upgrade matplotlib
 pip install --user python-twitter
 pip install --user seaborn
