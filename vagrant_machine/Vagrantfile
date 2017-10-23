@@ -23,6 +23,7 @@ Vagrant.configure(2) do |config|
   end
   config.vm.provision :shell, path: "bootstrap.sh"
   config.vm.provision :shell, path: 'loader.sh', privileged: false
+
   # config.vm.provision :shell, path: 'jup_load.sh', run: 'always'
 
   # config.vm.provision "shell", inline: <<-SHELL
@@ -33,8 +34,12 @@ Vagrant.configure(2) do |config|
   #   sudo mkdir /vagrant/notebook
   # SHELL
 
-  # config.vm.provision :shell, run: "always", inline: <<-SHELL
-  #   jupyter notebook --notebook-dir=/vagrant/notebook --no-browser --ip=0.0.0.0 
-  # SHELL
+  config.vm.provision :shell, run: "always", inline: <<-SHELL
+    echo To start jupyter type 
+    echo vagrant ssh 
+    echo and type 
+    echo jupyter notebook --notebook-dir=/vagrant/notebook --no-browser --ip=0.0.0.0 
+    echo And follow link
+  SHELL
 
 end
